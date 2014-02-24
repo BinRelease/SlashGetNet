@@ -1,13 +1,18 @@
 angularAppModule.factory('testRepository', function ($http, $q) {
 return {
-get: function (name,isfart) {
+get: function (id,isfart) {
      var deferred = $q.defer();
-     $http.get('/api/Test?name=' + name + '&isfart=' + isfart + '').success(deferred.resolve).error(deferred.reject);
+     $http.get('/api/Test/' + id + '?isfart=' + isfart + '').success(deferred.resolve).error(deferred.reject);
      return deferred.promise;
      },
-postifyThisGuy: function (randomnumber,fart) {
+get: function () {
      var deferred = $q.defer();
-     $http.post('/api/Test?randomnumber=' + randomnumber + '', fart).success(deferred.resolve).error(deferred.reject);
+     $http.get('/api/Test').success(deferred.resolve).error(deferred.reject);
+     return deferred.promise;
+     },
+postifyThisGuy: function (id,fart) {
+     var deferred = $q.defer();
+     $http.post('/api/Test/' + id + '', fart).success(deferred.resolve).error(deferred.reject);
      return deferred.promise;
      },
 save: function (fart) {
