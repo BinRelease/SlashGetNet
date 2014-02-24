@@ -10,7 +10,7 @@ namespace WebApplication1.Areas.AngularAuto.Controllers
     public class AutoController : ApiController
     {
         [HttpGet]
-        public string Get()
+        public string GetHammerStein()
         {
             return "this is working";
         }

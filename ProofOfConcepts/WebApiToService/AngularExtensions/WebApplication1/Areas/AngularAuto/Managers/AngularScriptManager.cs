@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
 
+///MINIMIZE nuget package: Install-Package AjaxMin
 namespace WebApplication1.Areas.AngularAuto
 {
     public static class AngularScriptManager
@@ -28,6 +29,12 @@ namespace WebApplication1.Areas.AngularAuto
                     if (splitIndex > -1)
                     {
                         path = path.Substring(0, splitIndex);
+                    }
+
+                    var idPathIndex = path.IndexOf("/{");
+                    if(idPathIndex > -1)
+                    {
+                        path = path.Substring(0, idPathIndex);
                     }
 
                     if (groupedApiCalls.ContainsKey(path))
@@ -54,7 +61,7 @@ namespace WebApplication1.Areas.AngularAuto
             var physicalFolderPath = Path.GetDirectoryName(physicalFilePath);
 
             var repositoryName = Path.GetFileNameWithoutExtension(physicalFilePath);
-            repositoryName = Char.ToLowerInvariant(repositoryName[0]) + repositoryName.Substring(1);
+            repositoryName = repositoryName.ToCamelCase();// Char.ToLowerInvariant(repositoryName[0]) + repositoryName.Substring(1);
 
             if (!Directory.Exists(physicalFolderPath))
             {
@@ -70,6 +77,8 @@ namespace WebApplication1.Areas.AngularAuto
             int i = 0;
             foreach(var api in apis)
             {
+                var functionName = api.ActionDescriptor.ActionName.ToCamelCase();
+
                 string method = api.HttpMethod.Method;
                 /*
                  * getProjectAreas: function () {
@@ -78,10 +87,13 @@ namespace WebApplication1.Areas.AngularAuto
                         return deferred.promise;
                     },
                  */
+                var properGetPath = SetupAjaxPathWithGetVariables(api.RelativePath, api.ParameterDescriptions);
+                var postParameter = SetupAjaxPostParameter(api.ParameterDescriptions);
+
                 var arguments = BuildArguments(api.ParameterDescriptions.ToArray());
-                jsData.Add(string.Format("{0}: function ({1}) {{", method.ToLower(), arguments));
+                jsData.Add(string.Format("{0}: function ({1}) {{", functionName, arguments));
                 jsData.Add("     var deferred = $q.defer();");
-                jsData.Add(string.Format("     $http.{0}('/{1}').success(deferred.resolve).error(deferred.reject);", method.ToLower(), relativeBarePath));
+                jsData.Add(string.Format("     $http.{0}('/{1}'{2}).success(deferred.resolve).error(deferred.reject);", method.ToLower(), properGetPath, postParameter));
                 jsData.Add("     return deferred.promise;");
                 
                 //the comma is the difference here
@@ -99,6 +111,49 @@ namespace WebApplication1.Areas.AngularAuto
             jsData.Add("}});");
 
             System.IO.File.WriteAllLines(physicalFilePath, jsData.ToArray());
+        }
+
+        private static string SetupAjaxPostParameter(System.Collections.ObjectModel.Collection<ApiParameterDescription> parameters)
+        {
+            var returnValue = string.Empty;
+
+            if(parameters != null && parameters.Count > 0 )
+            {
+                var postParameters = parameters.Where(x => x.Source == ApiParameterSource.FromBody);
+                if(postParameters != null && postParameters.Count() == 1)
+                {
+                    var p = postParameters.First();
+
+                    returnValue = string.Format(", {0}", p.Name.ToCamelCase());
+
+                }
+                else if(postParameters.Count() > 1) // more than one. there can only be one!
+                {
+                    throw new Exception(string.Format("There can only be one body parameter in a WebAPI call!"));
+                }
+            }
+
+            return returnValue;
+        }
+
+        private static string SetupAjaxPathWithGetVariables(string path, System.Collections.ObjectModel.Collection<ApiParameterDescription> parameters)
+        {
+            var returnValue = path;
+            foreach(var p in parameters)
+            {
+                if(p.Source == ApiParameterSource.FromUri)
+                {
+                    string toBeReplaced = string.Format("{{{0}}}", p.Name);
+                    string jsInjection = string.Format("' + {0} + '", p.Name.ToCamelCase());
+                    returnValue = returnValue.Replace(toBeReplaced, jsInjection);
+                }
+            }
+            return returnValue;
+        }
+
+        private static string ToCamelCase(this string str)
+        {
+            return Char.ToLowerInvariant(str[0]) + str.Substring(1);
         }
 
         private static string BuildArguments(ApiParameterDescription[] parameters)

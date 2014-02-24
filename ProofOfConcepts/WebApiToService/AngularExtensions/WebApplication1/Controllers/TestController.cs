@@ -33,8 +33,20 @@ namespace WebApplication1.Controllers
         /// <param name="randomnumber">The randomnumber.</param>
         /// <param name="fart">The fart.</param>
         [HttpPost]
-        public void Post(int randomnumber, [FromBody]Fart fart)
+        public void PostifyThisGuy(int randomnumber, [FromBody]Fart fart)
         {
+        }
+
+        [HttpPut]
+        public void Save([FromBody]Fart fart)
+        {
+
+        }
+
+        [HttpDelete]
+        public void d(int id)
+        {
+
         }
     }
 }

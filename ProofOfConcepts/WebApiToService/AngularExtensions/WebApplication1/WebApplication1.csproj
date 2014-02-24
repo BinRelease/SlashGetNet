@@ -133,7 +133,6 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\AngularAuto\AngularAutoAreaRegistration.cs" />
     <Compile Include="Areas\AngularAuto\Controllers\AutoController.cs" />
-    <Compile Include="Areas\AngularAuto\Controllers\TestController.cs" />
     <Compile Include="Areas\AngularAuto\Managers\AngularScriptManager.cs" />
     <Compile Include="Areas\HelpPage\ApiDescriptionExtensions.cs" />
     <Compile Include="Areas\HelpPage\App_Start\HelpPageConfig.cs" />

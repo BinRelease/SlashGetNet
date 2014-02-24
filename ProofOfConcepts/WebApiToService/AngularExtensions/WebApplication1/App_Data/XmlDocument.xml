@@ -489,7 +489,7 @@
             <param name="isfart">if set to <c>true</c> [isfart].</param>
             <returns>a fart model</returns>
         </member>
-        <member name="M:WebApplication1.Controllers.TestController.Post(System.Int32,WebApplication1.Models.Fart)">
+        <member name="M:WebApplication1.Controllers.TestController.PostifyThisGuy(System.Int32,WebApplication1.Models.Fart)">
             <summary>
             Posts the specified randomnumber.
             </summary>
