@@ -10,7 +10,7 @@
         $scope.title = 'TestCtrl';
         $scope.activate = activate;
 
-        testRepository.get(15, true).then(function (fart) {
+        testRepository.getByID(15, true).then(function (fart) {
             console.log('fart success');
             console.log(fart);
 

@@ -17,7 +17,7 @@ namespace WebApplication1.Controllers
         /// <param name="isfart">if set to <c>true</c> [isfart].</param>
         /// <returns>a fart model</returns>
         [HttpGet]
-        public Fart Get(int id, bool isfart)
+        public Fart GetByID(int id, bool isfart)
         {
             return new Fart()
             {

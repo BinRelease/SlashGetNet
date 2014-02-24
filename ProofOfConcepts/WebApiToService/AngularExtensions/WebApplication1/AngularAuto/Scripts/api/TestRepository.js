@@ -1,6 +1,6 @@
 angularAppModule.factory('testRepository', function ($http, $q) {
 return {
-get: function (id,isfart) {
+getByID: function (id,isfart) {
      var deferred = $q.defer();
      $http.get('/api/Test/' + id + '?isfart=' + isfart + '').success(deferred.resolve).error(deferred.reject);
      return deferred.promise;

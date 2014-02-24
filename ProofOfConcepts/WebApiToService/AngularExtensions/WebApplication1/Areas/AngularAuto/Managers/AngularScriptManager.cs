@@ -8,7 +8,6 @@ using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
 
-///MINIMIZE nuget package: Install-Package AjaxMin
 namespace WebApplication1.Areas.AngularAuto
 {
     public static class AngularScriptManager
@@ -74,10 +73,20 @@ namespace WebApplication1.Areas.AngularAuto
             jsData.Add("return {");
 
             //add each method
+            List<string> usedFunctionNames = new List<string>();
             int i = 0;
             foreach(var api in apis)
             {
                 var functionName = api.ActionDescriptor.ActionName.ToCamelCase();
+
+                if(usedFunctionNames.Contains(functionName))
+                {
+                    throw new Exception("WebAPI method names must be unique within a given controller, for Angular's sake! Path: " + relativeBarePath + ", " + " Function Name: " + functionName);
+                }
+                else
+                {
+                    usedFunctionNames.Add(functionName);
+                }
 
                 string method = api.HttpMethod.Method;
                 /*

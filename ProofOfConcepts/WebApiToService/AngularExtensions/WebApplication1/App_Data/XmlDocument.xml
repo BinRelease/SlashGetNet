@@ -481,7 +481,7 @@
             </summary>
             <param name="documentPath">The physical path to XML document.</param>
         </member>
-        <member name="M:WebApplication1.Controllers.TestController.Get(System.Int32,System.Boolean)">
+        <member name="M:WebApplication1.Controllers.TestController.GetByID(System.Int32,System.Boolean)">
             <summary>
             Gets the specified name.
             </summary>
